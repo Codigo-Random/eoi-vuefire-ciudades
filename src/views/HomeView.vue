@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
 export default {
@@ -79,7 +79,18 @@ export default {
         name: "",
         country: "",
       };
-    },
+    }
   },
+  async mounted() {
+    const q = query(collection(db, "ciudades"), where("public", "==", true));
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      this.cities.push(doc.data())
+    });
+
+  }
 };
 </script>
